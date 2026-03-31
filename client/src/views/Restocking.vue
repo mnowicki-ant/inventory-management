@@ -137,36 +137,36 @@ export default {
 </script>
 
 <style scoped>
-.budget-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.budget-card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .budget-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
-.budget-label { font-size: 0.813rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-.budget-value { font-size: 2rem; font-weight: 600; color: #0f172a; }
+.budget-label { font-size: 0.813rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+.budget-value { font-size: 2rem; font-weight: 600; color: var(--text-primary); }
 .budget-meta { text-align: right; }
-.meta-row { display: flex; gap: 1rem; justify-content: flex-end; font-size: 0.875rem; color: #64748b; }
-.meta-row strong { color: #0f172a; min-width: 100px; text-align: right; }
+.meta-row { display: flex; gap: 1rem; justify-content: flex-end; font-size: 0.875rem; color: var(--text-secondary); }
+.meta-row strong { color: var(--text-primary); min-width: 100px; text-align: right; }
 .budget-slider { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: #e2e8f0; border-radius: 3px; outline: none; }
 .budget-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #0f172a; border-radius: 50%; cursor: pointer; }
 .budget-slider::-moz-range-thumb { width: 20px; height: 20px; background: #0f172a; border-radius: 50%; cursor: pointer; border: none; }
-.slider-marks { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: #94a3b8; }
-.card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.slider-marks { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); }
+.card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-.card-title { font-size: 1.25rem; font-weight: 600; color: #0f172a; margin: 0; }
+.card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin: 0; }
 .btn-primary { background: #0f172a; color: white; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; font-weight: 500; cursor: pointer; }
 .btn-primary:hover:not(:disabled) { background: #1e293b; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.empty-state { padding: 2rem; text-align: center; color: #64748b; }
+.empty-state { padding: 2rem; text-align: center; color: var(--text-secondary); }
 .restock-table { width: 100%; border-collapse: collapse; }
-.restock-table th { text-align: left; padding: 0.75rem; font-size: 0.813rem; color: #64748b; border-bottom: 1px solid #e2e8f0; }
-.restock-table td { padding: 0.75rem; border-bottom: 1px solid #f1f5f9; font-size: 0.875rem; }
-.restock-table code { background: #f1f5f9; padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.75rem; }
+.restock-table th { text-align: left; padding: 0.75rem; font-size: 0.813rem; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.restock-table td { padding: 0.75rem; border-bottom: 1px solid var(--border-subtle); font-size: 0.875rem; }
+.restock-table code { background: var(--bg-hover); padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.75rem; }
 .trend { padding: 0.125rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
 .trend.increasing { background: #dcfce7; color: #166534; }
 .trend.stable { background: #dbeafe; color: #1e40af; }
 .trend.decreasing { background: #fef3c7; color: #92400e; }
 .success-card { border-left: 4px solid #16a34a; }
 .success-header { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; }
-.success-header strong { color: #0f172a; }
-.success-header span { color: #64748b; font-size: 0.875rem; }
+.success-header strong { color: var(--text-primary); }
+.success-header span { color: var(--text-secondary); font-size: 0.875rem; }
 .link { color: #3b82f6; text-decoration: none; font-size: 0.875rem; }
 .link:hover { text-decoration: underline; }
 </style>

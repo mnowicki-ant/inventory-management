@@ -11,6 +11,7 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('inventory.stockLevels') }} ({{ filteredItems.length }} {{ t('inventory.skus') }})</h3>
+          <button class="csv-btn" @click="exportCsv">{{ t('common.export') }} CSV</button>
           <div class="search-box">
             <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
@@ -89,6 +90,7 @@ import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
 import InventoryDetailModal from '../components/InventoryDetailModal.vue'
+import { downloadCsv } from '../utils/csv'
 
 export default {
   name: 'Inventory',
@@ -203,7 +205,12 @@ export default {
 
     onMounted(loadInventory)
 
+    const exportCsv = () => {
+      downloadCsv(filteredItems.value, 'inventory.csv')
+    }
+
     return {
+      exportCsv,
       t,
       loading,
       error,
@@ -234,7 +241,7 @@ export default {
 }
 
 .page-header p {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -244,13 +251,13 @@ export default {
   align-items: center;
   gap: 1.5rem;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -266,7 +273,7 @@ export default {
   left: 0.75rem;
   width: 18px;
   height: 18px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   pointer-events: none;
 }
 
@@ -276,20 +283,20 @@ export default {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.875rem;
-  color: #0f172a;
-  background: #f8fafc;
+  color: var(--text-primary);
+  background: var(--bg-hover);
   transition: all 0.2s;
 }
 
 .search-input:focus {
   outline: none;
   border-color: #3b82f6;
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .clear-search {
@@ -302,14 +309,14 @@ export default {
   background: transparent;
   border: none;
   border-radius: 4px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .clear-search:hover {
   background: #e2e8f0;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .clear-search svg {
@@ -321,7 +328,7 @@ export default {
 .error {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .error {
