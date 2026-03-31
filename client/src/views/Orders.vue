@@ -77,29 +77,29 @@
       <!-- Submitted Restocking Orders -->
       <div v-if="restockingOrders.length > 0" class="card">
         <div class="card-header">
-          <h3 class="card-title">Submitted Restocking Orders ({{ restockingOrders.length }})</h3>
+          <h3 class="card-title">{{ t('orders.submittedRestocking') }} ({{ restockingOrders.length }})</h3>
         </div>
         <div class="table-container">
           <table class="orders-table">
             <thead>
               <tr>
-                <th class="col-order-number">Order #</th>
-                <th class="col-items">Items</th>
-                <th class="col-status">Status</th>
-                <th class="col-date">Created</th>
-                <th class="col-date">Expected Delivery</th>
-                <th>Lead Time</th>
-                <th class="col-value">Total</th>
+                <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+                <th class="col-items">{{ t('orders.table.items') }}</th>
+                <th class="col-status">{{ t('orders.table.status') }}</th>
+                <th class="col-date">{{ t('orders.created') }}</th>
+                <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+                <th>{{ t('orders.leadTime') }}</th>
+                <th class="col-value">{{ t('orders.total') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="ro in restockingOrders" :key="ro.id">
                 <td><strong>{{ ro.order_number }}</strong></td>
-                <td>{{ ro.items.length }} items</td>
+                <td>{{ t('orders.itemsCount', { count: ro.items.length }) }}</td>
                 <td><span class="badge info">{{ ro.status }}</span></td>
                 <td>{{ formatDate(ro.created_date) }}</td>
                 <td>{{ formatDate(ro.expected_delivery) }}</td>
-                <td>{{ ro.lead_time_days }} days</td>
+                <td>{{ ro.lead_time_days }} {{ t('restocking.days') }}</td>
                 <td><strong>{{ currencySymbol }}{{ ro.total_value.toLocaleString() }}</strong></td>
               </tr>
             </tbody>

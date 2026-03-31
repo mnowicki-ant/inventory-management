@@ -1,74 +1,63 @@
 <template>
   <div class="restocking">
     <div class="page-header">
-      <h2>Restocking</h2>
-      <p>Budget-based restocking recommendations from demand forecast</p>
+      <h2>{{ t('restocking.title') }}</h2>
+      <p>{{ t('restocking.description') }}</p>
     </div>
 
     <div class="card budget-card">
       <div class="budget-header">
         <div>
-          <div class="budget-label">Available Budget</div>
-          <div class="budget-value">${{ budget.toLocaleString() }}</div>
+          <div class="budget-label">{{ t('restocking.availableBudget') }}</div>
+          <div class="budget-value">{{ currencySymbol }}{{ budget.toLocaleString() }}</div>
         </div>
         <div class="budget-meta">
-          <div class="meta-row"><span>Recommended spend</span><strong>${{ totalRecommended.toLocaleString() }}</strong></div>
-          <div class="meta-row"><span>Remaining</span><strong>${{ (budget - totalRecommended).toLocaleString() }}</strong></div>
+          <div class="meta-row"><span>{{ t('restocking.recommendedSpend') }}</span><strong>{{ currencySymbol }}{{ totalRecommended.toLocaleString() }}</strong></div>
+          <div class="meta-row"><span>{{ t('restocking.remaining') }}</span><strong>{{ currencySymbol }}{{ (budget - totalRecommended).toLocaleString() }}</strong></div>
         </div>
       </div>
-      <input
-        type="range"
-        class="budget-slider"
-        :min="5000"
-        :max="250000"
-        :step="1000"
-        v-model.number="budget"
-      />
+      <input type="range" class="budget-slider" :min="5000" :max="250000" :step="1000" v-model.number="budget" />
       <div class="slider-marks">
-        <span>$5K</span><span>$50K</span><span>$100K</span><span>$150K</span><span>$200K</span><span>$250K</span>
+        <span>{{ currencySymbol }}5K</span><span>{{ currencySymbol }}50K</span><span>{{ currencySymbol }}100K</span><span>{{ currencySymbol }}150K</span><span>{{ currencySymbol }}200K</span><span>{{ currencySymbol }}250K</span>
       </div>
     </div>
 
-    <div v-if="loading" class="loading">Loading recommendations...</div>
+    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else class="card">
       <div class="card-header">
-        <h3 class="card-title">Recommended Items ({{ recommendations.length }})</h3>
-        <button
-          class="btn-primary"
-          :disabled="recommendations.length === 0 || submitting"
-          @click="placeOrder"
-        >
-          {{ submitting ? 'Submitting...' : 'Place Order' }}
+        <h3 class="card-title">{{ t('restocking.recommendedItems') }} ({{ recommendations.length }})</h3>
+        <button class="btn-primary" :disabled="recommendations.length === 0 || submitting" @click="placeOrder">
+          {{ submitting ? t('restocking.submitting') : t('restocking.placeOrder') }}
         </button>
       </div>
       <div v-if="recommendations.length === 0" class="empty-state">
-        No items fit the current budget. Try increasing it.
+        {{ t('restocking.emptyState') }}
       </div>
       <div v-else class="table-container">
         <table class="restock-table">
           <thead>
             <tr>
-              <th>SKU</th>
-              <th>Item</th>
-              <th>Trend</th>
-              <th>Forecast Demand</th>
-              <th>Qty</th>
-              <th>Unit Cost</th>
-              <th>Line Total</th>
-              <th>Lead Time</th>
+              <th>{{ t('restocking.table.sku') }}</th>
+              <th>{{ t('restocking.table.item') }}</th>
+              <th>{{ t('restocking.table.trend') }}</th>
+              <th>{{ t('restocking.table.forecastDemand') }}</th>
+              <th>{{ t('restocking.table.qty') }}</th>
+              <th>{{ t('restocking.table.unitCost') }}</th>
+              <th>{{ t('restocking.table.lineTotal') }}</th>
+              <th>{{ t('restocking.table.leadTime') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in recommendations" :key="item.sku">
               <td><code>{{ item.sku }}</code></td>
               <td>{{ item.name }}</td>
-              <td><span :class="['trend', item.trend]">{{ item.trend }}</span></td>
+              <td><span :class="['trend', item.trend]">{{ t('trends.' + item.trend) }}</span></td>
               <td>{{ item.forecasted_demand }}</td>
               <td>{{ item.recommended_qty }}</td>
-              <td>${{ item.unit_cost.toFixed(2) }}</td>
-              <td><strong>${{ item.line_total.toLocaleString() }}</strong></td>
-              <td>{{ item.lead_time_days }} days</td>
+              <td>{{ currencySymbol }}{{ item.unit_cost.toFixed(2) }}</td>
+              <td><strong>{{ currencySymbol }}{{ item.line_total.toLocaleString() }}</strong></td>
+              <td>{{ item.lead_time_days }} {{ t('restocking.days') }}</td>
             </tr>
           </tbody>
         </table>
@@ -77,10 +66,10 @@
 
     <div v-if="lastOrder" class="card success-card">
       <div class="success-header">
-        <strong>Order {{ lastOrder.order_number }} submitted</strong>
-        <span>${{ lastOrder.total_value.toLocaleString() }} · expected in {{ lastOrder.lead_time_days }} days</span>
+        <strong>{{ t('restocking.orderSubmitted', { orderNumber: lastOrder.order_number }) }}</strong>
+        <span>{{ t('restocking.expectedIn', { amount: currencySymbol + lastOrder.total_value.toLocaleString(), days: lastOrder.lead_time_days }) }}</span>
       </div>
-      <router-link to="/orders" class="link">View in Orders →</router-link>
+      <router-link to="/orders" class="link">{{ t('restocking.viewInOrders') }} →</router-link>
     </div>
   </div>
 </template>
@@ -88,10 +77,14 @@
 <script>
 import { ref, computed, watch, onMounted } from 'vue'
 import { api } from '../api'
+import { useI18n } from '../composables/useI18n'
 
 export default {
   name: 'Restocking',
   setup() {
+    const { t, currentCurrency } = useI18n()
+    const currencySymbol = computed(() => currentCurrency.value === 'JPY' ? '¥' : '$')
+
     const budget = ref(50000)
     const recommendations = ref([])
     const loading = ref(true)
@@ -125,10 +118,7 @@ export default {
       submitting.value = true
       try {
         const items = recommendations.value.map(r => ({
-          sku: r.sku,
-          name: r.name,
-          quantity: r.recommended_qty,
-          unit_cost: r.unit_cost,
+          sku: r.sku, name: r.name, quantity: r.recommended_qty, unit_cost: r.unit_cost,
         }))
         lastOrder.value = await api.submitRestockingOrder(items)
         await loadRecommendations()
@@ -141,7 +131,7 @@ export default {
 
     onMounted(loadRecommendations)
 
-    return { budget, recommendations, loading, error, submitting, lastOrder, totalRecommended, placeOrder }
+    return { t, currencySymbol, budget, recommendations, loading, error, submitting, lastOrder, totalRecommended, placeOrder }
   }
 }
 </script>
