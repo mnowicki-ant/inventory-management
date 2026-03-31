@@ -6,6 +6,9 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    reports: 'レポート',
+    restocking: '補充',
+    backlog: 'バックログ',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -112,6 +115,10 @@ export default {
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
     quantity: '数量',
+    submittedRestocking: '送信済み補充注文',
+    leadTime: 'リードタイム',
+    created: '作成日',
+    total: '合計',
     table: {
       orderNumber: '注文番号',
       orderId: '注文ID',
@@ -312,6 +319,79 @@ export default {
   },
 
   // Common
+  reports: {
+    title: 'パフォーマンスレポート',
+    description: '四半期ごとのパフォーマンス指標と月次トレンドを表示',
+    quarterlyPerformance: '四半期パフォーマンス',
+    monthlyRevenueTrend: '月次収益トレンド',
+    monthOverMonth: '前月比分析',
+    totalRevenueYTD: '総収益（年初来）',
+    avgMonthlyRevenue: '平均月次収益',
+    totalOrdersYTD: '総注文数（年初来）',
+    bestQuarter: '最高パフォーマンス四半期',
+    table: {
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総収益',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '履行率',
+      month: '月',
+      orders: '注文',
+      revenue: '収益',
+      change: '変化',
+      growthRate: '成長率'
+    }
+  },
+
+  restocking: {
+    title: '補充',
+    description: '需要予測に基づく予算ベースの補充推奨',
+    availableBudget: '利用可能予算',
+    recommendedSpend: '推奨支出',
+    remaining: '残高',
+    recommendedItems: '推奨品目',
+    placeOrder: '発注する',
+    submitting: '送信中...',
+    emptyState: '現在の予算に収まる品目がありません。予算を増やしてください。',
+    orderSubmitted: '注文 {orderNumber} を送信しました',
+    expectedIn: '{amount} · {days}日で到着予定',
+    viewInOrders: '注文で表示',
+    table: {
+      sku: 'SKU',
+      item: '品目',
+      trend: 'トレンド',
+      forecastDemand: '予測需要',
+      qty: '数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム'
+    },
+    days: '日'
+  },
+
+  backlog: {
+    title: 'バックログ管理',
+    description: '在庫不足を追跡・解決',
+    highPriority: '高優先度',
+    mediumPriority: '中優先度',
+    lowPriority: '低優先度',
+    totalItems: '総バックログ項目',
+    backlogItems: 'バックログ項目',
+    noBacklog: 'バックログなし - すべての注文を履行できます！',
+    unitsShort: '不足',
+    days: '日',
+    table: {
+      orderId: '注文ID',
+      sku: 'SKU',
+      itemName: '品目名',
+      quantityNeeded: '必要数量',
+      quantityAvailable: '在庫数量',
+      shortage: '不足',
+      daysDelayed: '遅延日数',
+      priority: '優先度'
+    }
+  },
+
   common: {
     loading: '読み込み中...',
     error: 'エラー',

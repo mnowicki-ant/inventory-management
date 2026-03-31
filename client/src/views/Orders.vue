@@ -30,6 +30,7 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
+          <button class="csv-btn" @click="exportCsv">{{ t('common.export') }} CSV</button>
         </div>
         <div class="table-container">
           <table class="orders-table">
@@ -74,6 +75,38 @@
           </table>
         </div>
       </div>
+      <!-- Submitted Restocking Orders -->
+      <div v-if="restockingOrders.length > 0" class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submittedRestocking') }} ({{ restockingOrders.length }})</h3>
+        </div>
+        <div class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+                <th class="col-items">{{ t('orders.table.items') }}</th>
+                <th class="col-status">{{ t('orders.table.status') }}</th>
+                <th class="col-date">{{ t('orders.created') }}</th>
+                <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+                <th>{{ t('orders.leadTime') }}</th>
+                <th class="col-value">{{ t('orders.total') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="ro in restockingOrders" :key="ro.id">
+                <td><strong>{{ ro.order_number }}</strong></td>
+                <td>{{ t('orders.itemsCount', { count: ro.items.length }) }}</td>
+                <td><span class="badge info">{{ ro.status }}</span></td>
+                <td>{{ formatDate(ro.created_date) }}</td>
+                <td>{{ formatDate(ro.expected_delivery) }}</td>
+                <td>{{ ro.lead_time_days }} {{ t('restocking.days') }}</td>
+                <td><strong>{{ currencySymbol }}{{ ro.total_value.toLocaleString() }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +116,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { downloadCsv } from '../utils/csv'
 
 export default {
   name: 'Orders',
@@ -95,6 +129,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockingOrders = ref([])
 
     // Use shared filters
     const {
@@ -109,9 +144,11 @@ export default {
       try {
         loading.value = true
         const filters = getCurrentFilters()
-        const fetchedOrders = await api.getOrders(filters)
-
-        // Sort orders by order_date (earliest first)
+        const [fetchedOrders, fetchedRestocking] = await Promise.all([
+          api.getOrders(filters),
+          api.getRestockingOrders(),
+        ])
+        restockingOrders.value = fetchedRestocking
         orders.value = fetchedOrders.sort((a, b) => {
           const dateA = new Date(a.order_date)
           const dateB = new Date(b.order_date)
@@ -155,11 +192,28 @@ export default {
 
     onMounted(loadOrders)
 
+    const exportCsv = () => {
+      const flat = orders.value.map(o => ({
+        order_number: o.order_number,
+        customer: o.customer,
+        status: o.status,
+        warehouse: o.warehouse,
+        category: o.category,
+        item_count: o.items.length,
+        total_value: o.total_value,
+        order_date: o.order_date,
+        expected_delivery: o.expected_delivery,
+      }))
+      downloadCsv(flat, 'orders.csv')
+    }
+
     return {
+      exportCsv,
       t,
       loading,
       error,
       orders,
+      restockingOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -244,8 +298,8 @@ export default {
   top: 100%;
   left: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 0.75rem;
@@ -259,7 +313,7 @@ export default {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .item-entry:last-child {
@@ -269,11 +323,11 @@ export default {
 .item-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .item-meta {
   font-size: 0.813rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 </style>
